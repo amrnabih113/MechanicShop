@@ -1,0 +1,81 @@
+using System.Data;
+using MechanicShop.Domain.Common;
+using MechanicShop.Domain.Common.Results;
+
+namespace MechanicShop.Domain.Customers.Vehicles;
+
+public sealed class Vehicle : AuditableEntity
+{
+    public Guid CustomerId { get; }
+
+    public string? Make { get; private set; }
+
+    public String? Model { get; private set; }
+
+    public int Year { get; private set; }
+
+    public string? LicensePlate { get; private set; }
+
+    public Customer? Customer { get; set; }
+
+    private Vehicle()
+    {
+    }
+    private Vehicle(Guid id, string? make, string? model, int year, string? licensePlate) : base(id)
+    {
+
+        Make = make;
+        Model = model;
+        Year = year;
+        LicensePlate = licensePlate;
+    }
+    public string VehicleInfo => $"{Make} | {Model} | {Year}";
+
+    public static Result<Vehicle> Create(Guid id, string? make, string? model, int year, string? licensePlate)
+    {
+        if (string.IsNullOrWhiteSpace(make))
+        {
+            return VehicleErrors.MakeRequired;
+        }
+        if (string.IsNullOrWhiteSpace(model))
+        {
+            return VehicleErrors.ModelRequired;
+        }
+        if (year < 1886 || year > DateTime.UtcNow.Year)
+        {
+            return VehicleErrors.YearInvalid;
+        }
+        if (string.IsNullOrWhiteSpace(licensePlate))
+        {
+            return VehicleErrors.LicensePlateRequired;
+        }
+
+        return new Vehicle(id, make, model, year, licensePlate);
+    }
+    public Result<Updated> Update(string? make, string? model, int year, string? licensePlate)
+    {
+        if (string.IsNullOrWhiteSpace(make))
+        {
+            return VehicleErrors.MakeRequired;
+        }
+        if (string.IsNullOrWhiteSpace(model))
+        {
+            return VehicleErrors.ModelRequired;
+        }
+        if (year < 1886 || year > DateTime.UtcNow.Year)
+        {
+            return VehicleErrors.YearInvalid;
+        }
+        if (string.IsNullOrWhiteSpace(licensePlate))
+        {
+            return VehicleErrors.LicensePlateRequired;
+        }
+
+        Make = make;
+        Model = model;
+        Year = year;
+        LicensePlate = licensePlate;
+
+        return new Updated();
+    }
+}
