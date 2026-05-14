@@ -94,8 +94,8 @@ public sealed class Customer : AuditableEntity
 
         return Result.Updated;
     }
-    
-      public Result<Updated> UpsertParts(List<Vehicle> incomingVehicle)
+
+    public Result<Updated> UpsertParts(List<Vehicle> incomingVehicle)
     {
         _vehicles.RemoveAll(existing => incomingVehicle.All(v => v.Id != existing.Id));
 
@@ -112,7 +112,7 @@ public sealed class Customer : AuditableEntity
 
                 if (updateVehicleResult.IsError)
                 {
-                    return updateVehicleResult.Errors;
+                    return updateVehicleResult.Errors!;
                 }
             }
         }
