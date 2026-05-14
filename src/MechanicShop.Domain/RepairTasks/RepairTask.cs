@@ -60,4 +60,28 @@ public sealed class RepairTask : AuditableEntity
 
 
     }
+      public Result<Updated> UpsertParts(List<Part> incomingParts)
+    {
+        _parts.RemoveAll(existing => incomingParts.All(p => p.Id != existing.Id));
+
+        foreach (var incoming in incomingParts)
+        {
+            var existing = _parts.FirstOrDefault(p => p.Id == incoming.Id);
+            if (existing is null)
+            {
+                _parts.Add(incoming);
+            }
+            else
+            {
+                var updatePartResult = existing.Update(incoming.Name, incoming.Cost, incoming.Quantity);
+                if (updatePartResult.IsError)
+                {
+                    return updatePartResult.Errors!;
+                }
+            }
+        }
+
+        return Result.Updated;
+    }
+
 }
