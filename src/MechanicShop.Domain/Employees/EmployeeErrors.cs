@@ -17,14 +17,8 @@ public sealed class EmployeeErrors
         "LastNameRequired",
         "Employee last name is required.");
 
-    public static Error EmailRequired =>  Error.Validation(
-        "EmailRequired",
-        "Employee email is required.");
-    public static Error InvalidEmail => Error.Validation(
-        "InvalidEmail",
-        "Employee email must be a valid email address.");
 
-    public static Error InvalidPhoneNumber => Error.Validation(
-        "InvalidPhoneNumber",
-        "Employee phone number must be a valid phone number.");
-}
+    public static Error RoleInvalid => Error.Validation(
+        "InvalidRole",
+        "Employee role is invalid.");
+   }

@@ -2,6 +2,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using MechanicShop.Domain.Common;
 using MechanicShop.Domain.Common.Results;
+using MechanicShop.Domain.Identity;
 
 namespace MechanicShop.Domain.Employees;
 
@@ -9,8 +10,7 @@ public sealed class Employee : AuditableEntity
 {
     public string? FirstName { get; }
     public string? LastName { get; }
-    public string? PhoneNumber { get; }
-    public string? Email { get; }
+    public Role Role { get;}
 
     public string FullName => $"{FirstName} {LastName}".Trim();
 
@@ -18,15 +18,15 @@ public sealed class Employee : AuditableEntity
     {
     }
 
-    private Employee(Guid id, string? firstName, string? lastName, string? phoneNumber, string? email) : base(id)
+    private Employee(Guid id, string? firstName, string? lastName, Role role) : base(id)
     {
         FirstName = firstName;
         LastName = lastName;
-        PhoneNumber = phoneNumber;
-        Email = email;
+     
+        Role = role;
     }
 
-    public static Result<Employee> Create(Guid id, string? firstName, string? lastName, string phoneNumber, string? email)
+    public static Result<Employee> Create(Guid id, string? firstName, string? lastName, Role role)
     {
         if (id == Guid.Empty)
         {
@@ -41,25 +41,13 @@ public sealed class Employee : AuditableEntity
             return EmployeeErrors.LastNameRequired;
         }
        
-        if (!Regex.IsMatch(phoneNumber, @"^\+?\d{7,15}$"))
+    
+           if (!Enum.IsDefined(role))
         {
-            return EmployeeErrors.InvalidPhoneNumber;
-        }
-        if (string.IsNullOrWhiteSpace(email))
-        {
-            return EmployeeErrors.EmailRequired;
+            return EmployeeErrors.RoleInvalid;
         }
 
-        try
-        {
-            _ = new MailAddress(email);
-        }
-        catch (FormatException)
-        {
-            return EmployeeErrors.InvalidEmail;
-        }
-
-        return new Employee(id, firstName, lastName, phoneNumber, email);
+        return new Employee(id, firstName, lastName, role);
      
     }
 
