@@ -8,6 +8,8 @@ public sealed class Vehicle : AuditableEntity
 {
     public Guid CustomerId { get; }
 
+    
+
     public string? Make { get; private set; }
 
     public String? Model { get; private set; }
