@@ -83,5 +83,30 @@ public sealed class RepairTask : AuditableEntity
 
         return Result.Updated;
     }
+    public Result<Updated> Update(string? name, decimal laborCost, RepairDurationInMinutes estimatedDurationInMinutes)
+    {
+        if (string.IsNullOrWhiteSpace(name))
+        {
+            return RepairTaskErrors.NameRequired;
+        }
+        if (laborCost < 0)
+        {
+            return RepairTaskErrors.LaborCostInvalid;
+        }
+        if (laborCost <= 0)
+        {
+            return RepairTaskErrors.LaborCostInvalid;
+        }
 
+        if (!Enum.IsDefined(estimatedDurationInMinutes))
+        {
+            return RepairTaskErrors.DurationInvalid;
+        }
+
+        Name = name;
+        LaborCost = laborCost;
+        EstimatedDurationInMinutes = estimatedDurationInMinutes;
+
+        return Result.Updated;
+    }
 }
